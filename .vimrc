@@ -37,7 +37,8 @@ NeoBundleCheck
 "" =========== End Neobundle configs ==========
 " Bindings concrete for itcshub
 nnoremap <F5> :!cd /home/fort/Programming/itcshub/build && cmake ../itcshub && make<CR>
-noremap <F6> :!cd /home/fort/Programming/itcshub/build && make<CR>
+map <F4> <F5> :!/home/fort/Programming/itcshub/build/cfg_ctrl_test <CR>
+map <F6> <F5> :!cd /home/fort/Programming/itcshub/build && ./hub_test<CR>
 nnoremap <F12> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
 nnoremap <F1> ::let @/=""<CR>
 nnoremap <F7> :YcmCompleter FixIt<CR>
@@ -47,7 +48,7 @@ nnoremap <F7> :YcmCompleter FixIt<CR>
 " Disable global config for YCM
 let g:ycm_confirm_extra_conf = 0
 " Bindings
-nnoremap <F9> :YcmCompleter GoTo<CR>
+nnoremap <F9> :tab YcmCompleter GoTo<CR>
 " Disable autopreview
 set completeopt-=preview
 let g:ecm_add_preview_to_completeopt = 0
@@ -55,13 +56,16 @@ let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 " Disable highlighting
 let g:ycm_enable_diagnostic_highlighting = 0
+" Where open new file after GoTo
+let g:ycm_goto_buffer_command = 'split-or-existing-window'
 
 """ Some settings for Tagbar
 nmap <F2> :TagbarOpenAutoClose<CR>
 
 """ Some settings for NerdTree
 let NERDTreeShowHidden=0
-let g:nerdtree_tabs_open_on_console_startup=1
+let g:nerdtree_tabs_open_on_console_startup=0
+map <C-n> :NERDTreeTabsToggle <CR>
 
 " Automatically change the current directry
 set autochdir
@@ -84,8 +88,10 @@ noremap <A-Right> :+tabmove<cr>
 set nocompatible
 " use indentation of previous line
 set autoindent
-" usr intelligent indentation for C
+" use intelligent indentation for C
 set smartindent
+" disable default vim behavior about copy-past
+xnoremap p pgv"@=v:register.'y'<cr>"
 " Backspace on
 set backspace=indent,eol,start
 " configure tabwidth and insert spaces instead of tabs
@@ -96,6 +102,8 @@ set expandtab 		" expand tabs to spaces
 set textwidth=120
 " use colorscheme
 colorscheme desert
+" CTAGS
+set tags=~/Programming/itcshub/itcshub/tags
 
 " numbers of lines
 set number
@@ -124,8 +132,6 @@ set statusline=%<%f%h%m%r%=format=%{&fileformat}\ file=%{&fileencoding}\ enc=%{&
 set hlsearch
 " go to searching word
 set incsearch
-" stop search when EOF
-set nowrapscan
 " ignore case
 set ignorecase
 " disable autocomment on new line
@@ -156,4 +162,4 @@ menu Git.Push :!git push<CR>
 map <F10> :emenu Git.<TAB>
 
 "================= locale =============
-set langmap=!\\"№\\;%?*ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;!@#$%&*`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
+set langmap=!\\"№\\;%?*ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ;!@#$%&*`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\"ZXCVBNM<>
