@@ -35,13 +35,14 @@ filetype plugin indent on
 " this will conveniently prompt you to install them.
 NeoBundleCheck
 "" =========== End Neobundle configs ==========
-" Bindings concrete for itcshub
-nnoremap <F5> :!cd /home/fort/Programming/itcshub/build && cmake ../itcshub && make<CR>
-map <F4> <F5> :!/home/fort/Programming/itcshub/build/cfg_ctrl_test <CR>
-map <F6> <F5> :!cd /home/fort/Programming/itcshub/build && ./hub_test<CR>
-nnoremap <F12> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+" Bindings concrete for pokemon
+let g:ycm_confirm_extra_conf = 0
+nnoremap <F5> :!cd ~/Programming/cpp/poke_bat/ && ./docker_build.sh<CR>
+map <F6> <F5>:!cd ~/Programming/cpp/poke_bat/_result/ && ./main<CR>
+map <F4> :!cd ~/Programming/cpp/db_rce_on_rust/build/ && cmake ../ && make && ./rce_rust_exec <CR>
 nnoremap <F1> ::let @/=""<CR>
 nnoremap <F7> :YcmCompleter FixIt<CR>
+map <C-d> Oprintf("HERE %s\n", );<ESC>==;hi
 
 "" =========== My settings ==========
 """ Some settings for YCM
@@ -95,15 +96,13 @@ xnoremap p pgv"@=v:register.'y'<cr>"
 " Backspace on
 set backspace=indent,eol,start
 " configure tabwidth and insert spaces instead of tabs
-set tabstop=5 		" tab width is 4 spaces
-set shiftwidth=5	" indent also with spaces
+set tabstop=4 		" tab width is 4 spaces
+set shiftwidth=4	" indent also with spaces
 set expandtab 		" expand tabs to spaces
 " wrap lines at 120 chars
 set textwidth=120
 " use colorscheme
 colorscheme desert
-" CTAGS
-set tags=~/Programming/itcshub/itcshub/tags
 
 " numbers of lines
 set number
