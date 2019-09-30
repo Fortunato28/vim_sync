@@ -24,6 +24,8 @@ NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'dkprice/vim-easygrep'
 NeoBundle 'jistr/vim-nerdtree-tabs'
 
+NeoBundle 'Xuyuanp/nerdtree-git-plugin'
+NeoBundle 'dominikduda/vim_current_word'
 
 "
 call neobundle#end()
@@ -35,14 +37,19 @@ filetype plugin indent on
 " this will conveniently prompt you to install them.
 NeoBundleCheck
 "" =========== End Neobundle configs ==========
-" Bindings concrete for pokemon
-let g:ycm_confirm_extra_conf = 0
-nnoremap <F5> :!cd ~/Programming/cpp/poke_bat/ && ./docker_build.sh<CR>
-map <F6> <F5>:!cd ~/Programming/cpp/poke_bat/_result/ && ./main<CR>
-map <F4> :!cd ~/Programming/cpp/db_rce_on_rust/build/ && cmake ../ && make && ./rce_rust_exec <CR>
-nnoremap <F1> ::let @/=""<CR>
+" Bindings concrete for itcshub
+nnoremap <F5> :!cd /home/fort/Programming/itcshub/build && cmake -DANTBUILD=YES -DCONTRIB_DIR=/home/fort/Programming/itcshub/ivy/linux_sandbox/contrib -DPLATFORM=x86_64 ../ && make<CR>
+map <F4> <F5> :!/home/fort/Programming/itcshub/build/itcshub/tests/unit_tests <CR>
+map <F6> <F5> :!cd /home/fort/Programming/itcshub/build && ./hub_test<CR>
+nnoremap <F12> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+map <F1> ::let @/=""<CR>
 nnoremap <F7> :YcmCompleter FixIt<CR>
+" Fast printf
 map <C-d> Oprintf("HERE %s\n", );<ESC>==;hi
+imap <C-d> <ESC><C-d>
+" Fast open vimrc
+map <C-S-e> :tabe $MYVIMRC<CR>
+
 
 "" =========== My settings ==========
 """ Some settings for YCM
@@ -67,6 +74,11 @@ nmap <F2> :TagbarOpenAutoClose<CR>
 let NERDTreeShowHidden=0
 let g:nerdtree_tabs_open_on_console_startup=0
 map <C-n> :NERDTreeTabsToggle <CR>
+
+""" Some settings for vim_current_word
+"" The word under cursor:
+let g:vim_current_word#highlight_current_word = 1
+let g:vim_current_word#highlight_only_in_focused_window = 1
 
 " Automatically change the current directry
 set autochdir
@@ -96,13 +108,16 @@ xnoremap p pgv"@=v:register.'y'<cr>"
 " Backspace on
 set backspace=indent,eol,start
 " configure tabwidth and insert spaces instead of tabs
-set tabstop=4 		" tab width is 4 spaces
-set shiftwidth=4	" indent also with spaces
+set tabstop=5 		" tab width is 4 spaces
+set shiftwidth=5	" indent also with spaces
 set expandtab 		" expand tabs to spaces
 " wrap lines at 120 chars
 set textwidth=120
 " use colorscheme
 colorscheme desert
+hi CurrentWord ctermbg=53
+hi CurrentWordTwins ctermbg=238
+hi Search ctermbg=238
 
 " numbers of lines
 set number
@@ -126,6 +141,8 @@ set mouse=a
 set linebreak
 " show more file information
 set statusline=%<%f%h%m%r%=format=%{&fileformat}\ file=%{&fileencoding}\ enc=%{&encoding}\ %b\ 0x%B\ %l,%c%V\ %P
+" fix strange bug-thing
+autocmd BufRead scp://* :set bt=acwrite
 
 " search highlighting
 set hlsearch
