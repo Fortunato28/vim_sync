@@ -11,10 +11,12 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 " Required:
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-"" My Bundles here:
-"
-"NeoBundle 'rust-lang/rust.vim'
-"
+""" My Bundles here:
+"" Rust plugins
+NeoBundle 'rust-lang/rust.vim'
+NeoBundle 'racer-rust/vim-racer'
+NeoBundle 'vim-syntastic/syntastic'
+
 NeoBundle 'majutsushi/tagbar'
 NeoBundle 'Valoric/YouCompleteMe'
 NeoBundle 'bfrg/vim-cpp-modern'
@@ -23,8 +25,6 @@ NeoBundle 'jiangmiao/auto-pairs'
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'dkprice/vim-easygrep'
 NeoBundle 'jistr/vim-nerdtree-tabs'
-
-NeoBundle 'Xuyuanp/nerdtree-git-plugin'
 NeoBundle 'dominikduda/vim_current_word'
 
 "
@@ -37,23 +37,36 @@ filetype plugin indent on
 " this will conveniently prompt you to install them.
 NeoBundleCheck
 "" =========== End Neobundle configs ==========
-" Bindings concrete for itcshub
-nnoremap <F5> :!cd /home/fort/Programming/itcshub/build && cmake -DANTBUILD=YES -DCONTRIB_DIR=/home/fort/Programming/itcshub/ivy/linux_sandbox/contrib -DPLATFORM=x86_64 ../ && make<CR>
-map <F4> <F5> :!/home/fort/Programming/itcshub/build/itcshub/tests/unit_tests <CR>
-map <F6> <F5> :!cd /home/fort/Programming/itcshub/build && ./hub_test<CR>
-nnoremap <F12> :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
-map <F1> ::let @/=""<CR>
+nnoremap <F1> ::let @/=""<CR>
 nnoremap <F7> :YcmCompleter FixIt<CR>
 " Fast printf
-map <C-d> Oprintf("HERE %s\n", );<ESC>==;hi
+"map <C-d> Oprintf("HERE %s\n", );<ESC>==;hi
 imap <C-d> <ESC><C-d>
 " Fast open vimrc
 map <C-S-e> :tabe $MYVIMRC<CR>
 
+"" =========== Rust settings ==========
+let g:rustfmt_autosave = 1
+nnoremap <F5> :!cargo build<CR>
+nnoremap <F6> :!cargo run<CR>
+nnoremap <F4> :!cargo test<CR>
+map <C-d> Odbg!(&);<ESC>==;hi
+
+"" =========== Syntastic settings ==========
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_enable_highlighting = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_auto_jump = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 "" =========== My settings ==========
-""" Some settings for YCM
-" Disable global config for YCM
+"" Some settings for YCM
+"" Disable global config for YCM
 let g:ycm_confirm_extra_conf = 0
 " Bindings
 nnoremap <F9> :tab YcmCompleter GoTo<CR>
@@ -63,11 +76,11 @@ let g:ecm_add_preview_to_completeopt = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
 " Disable highlighting
-let g:ycm_enable_diagnostic_highlighting = 0
+let g:ycm_enable_diagnostic_highlighting = 1
 " Where open new file after GoTo
 let g:ycm_goto_buffer_command = 'split-or-existing-window'
 
-""" Some settings for Tagbar
+"" Some settings for Tagbar
 nmap <F2> :TagbarOpenAutoClose<CR>
 
 """ Some settings for NerdTree
@@ -80,8 +93,51 @@ map <C-n> :NERDTreeTabsToggle <CR>
 let g:vim_current_word#highlight_current_word = 1
 let g:vim_current_word#highlight_only_in_focused_window = 1
 
+" Add an ability to folding
+set foldenable          " Turn on folding
+set foldmethod=indent   " Use indentations to fold
+set foldcolumn=0        " Hide fold column
+set foldlevel=11        " Autoopen 11 levels of foldings when the file is open
+
 " Automatically change the current directry
 set autochdir
+
+" Display only filename in tab
+function! MyTabLine()
+      let s = ''
+      for i in range(tabpagenr('$'))
+        " select the highlighting
+        if i + 1 == tabpagenr()
+          let s .= '%#TabLineSel#'
+        else
+          let s .= '%#TabLine#'
+        endif
+
+        " set the tab page number (for mouse clicks)
+        let s .= '%' . (i + 1) . 'T'
+
+        " the label is made by MyTabLabel()
+        let s .= ' %{MyTabLabel(' . (i + 1) . ')} '
+      endfor
+
+      " after the last tab fill with TabLineFill and reset tab page nr
+      let s .= '%#TabLineFill#%T'
+
+      " right-align the label to close the current tab page
+      if tabpagenr('$') > 1
+        let s .= '%=%#TabLine#%999Xclose'
+      endif
+
+      return s
+    endfunction
+
+    function! MyTabLabel(n)
+      let buflist = tabpagebuflist(a:n)
+      let winnr = tabpagewinnr(a:n)
+      return fnamemodify(bufname(buflist[winnr - 1]), ':t')
+    endfunction
+
+    :set tabline=%!MyTabLine()
 
 set modeline
 " turn syntax highlighting on
@@ -94,8 +150,8 @@ set fenc=utf-8
 set termencoding=utf-8
 
 " Tab moving
-noremap <A-Left>  :-tabmove<cr>
-noremap <A-Right> :+tabmove<cr>
+noremap <C-S-h>  :-tabmove<cr>
+noremap <C-S-l> :+tabmove<cr>
 
 " disable vi compatibility
 set nocompatible
@@ -104,12 +160,12 @@ set autoindent
 " use intelligent indentation for C
 set smartindent
 " disable default vim behavior about copy-past
-xnoremap p pgv"@=v:register.'y'<cr>"
+"xnoremap p pgv"@=v:register.'y'<cr>"
 " Backspace on
 set backspace=indent,eol,start
 " configure tabwidth and insert spaces instead of tabs
-set tabstop=5 		" tab width is 4 spaces
-set shiftwidth=5	" indent also with spaces
+set tabstop=4 		" tab width is 4 spaces
+set shiftwidth=4	" indent also with spaces
 set expandtab 		" expand tabs to spaces
 " wrap lines at 120 chars
 set textwidth=120
